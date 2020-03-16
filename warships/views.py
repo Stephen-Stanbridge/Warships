@@ -141,7 +141,7 @@ class ShootingView(LoginRequiredMixin, View):
                         check += 1
             if check == 0:
                 game.delete()
-                return HttpResponse("Wygrales gre")
+                return HttpResponse("You won!")
 
             shot_field.table = table
             shot_field.save()

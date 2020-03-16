@@ -111,7 +111,7 @@ def create_ship(ship_size, field, amount):
     return field
 
 
-# TABLICA - [ILOSC STATKOW, ILE_MASZTOW]
+# ARRAY OF ARRAYS [ [AMOUNT OF SHIPS, HOW LONG] ]
 def create_ships(arr, table):
     for i in range(len(arr)):
         table = create_ship(arr[i][1], table, arr[i][0])
