@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+</head>
+<body>
+{% block header %}
+    <span style="border-bottom: #1757ae 1px solid;"> {{ user.username }}'s dashboard</span>
+{% endblock %}
+{% block content %}
+    <table style="text-align: left; width: 15%">
+        <tr><th><h2 style="color: chartreuse">Active games:</h2></th><th></th></tr>
+    {% for game in active_games %}
+        <tr><td style="border-right: #1757ae 1px solid;">{{ game.player_a.username }} <span style="color:red"> vs </span
+        >{{ game.player_b.username }}</td>
+            <td><a href="/game/{{ game.id }}">Play</a></td></tr>
+    {% endfor %}
+    </table>
+{% endblock %}
+
+</body>
+</html>

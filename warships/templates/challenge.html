@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Challenge user{% endblock %}</title>
+</head>
+<body>
+{% block header %}
+    <span style="border-bottom: #1757ae 1px solid;">Challenges panel</span>
+{% endblock %}
+{% block content %}
+<table style="width:400px;text-align: left; padding-bottom: 100px;">
+    <th>User</th><th>Challenge status</th>
+    {% for user in users %}
+        <tr><td>{{ user.username }}</td>
+        <td>
+        {% if user in created_by_logged_user_not_accepted %}
+            <span style="color: red">Pending</span>
+        {% elif user in logged_user_invited %}
+            <span style="color: black;">Invited:</span><br>
+                <a style="color: green;" href="/game/{{ logged_user.id }}/{{ user.id }}/accept">Accept</a>
+                <a style="color: red" href="/game/{{ logged_user.id }}/{{ user.id }}/reject">Reject</a>
+        {% elif user in active_games %}
+            <span style="color: chartreuse">Active game</span>
+        {% else %}
+            <a href="/user/challenge/{{ user.id }}">Challenge</a>
+        {% endif %}
+        </td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
+</body>
+</html>

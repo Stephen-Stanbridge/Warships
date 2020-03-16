@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Your game{% endblock %}</title>
+</head>
+<body>
+{% block header %}
+    {% if not error %}
+{{ game.player_a }} vs {{ game.player_b }} battle
+{% endif %}
+{% endblock %}
+{% block content %}
+{% if error %}
+        {{ error }} <a href="/game/14">Go back</a>
+{% else %}
+    <style>
+    table, th, td{
+        border: #1757ae 1px solid;
+    }
+    </style>
+
+    <span style="position: fixed; left: 10px;">Legend:<br>
+    <img width="30px" height="30px" src="{% static 'images/unnamed.png' %}"> - Ship
+        <br>
+    <img width="30px" height="30px" src="{% static 'images/black.jpeg' %}">  - Sea
+        <br>
+    <img width="30px" height="30px" src="{% static 'images/miss.png' %}"> - Miss
+    <br>
+    <img width="30px" height="30px" src="{% static 'images/hit.jpg' %}">  - Hit
+    </span>
+
+
+
+    <div style="left: 38%; top:60%;position: absolute">
+    <h2 style="color: indianred">Enemy's field</h2><br>
+        <table>
+        <tr>
+        {% for i in field_size %}
+            <th>{{ i }}</th>
+        {% endfor %}
+        </tr>
+        {% for row in enemy_player_field.table %}
+            <tr>
+                <td width="15px">
+            <b>{{ forloop.counter }}</b>
+                </td>
+            {% for col in row %}
+                <td>
+                    {% if col == 1 or col == 0 %}
+                        {% if game.whose_turn == user.id %}
+                        <a href="/game/{{ game.id }}/shoot/{{ user.id }}/{{ enemy_player.id }}/{{ forloop.parentloop.counter0 }}/{{ forloop.counter0 }}">
+                        <img width="30px" height="30px" src="{% static 'images/black.jpeg' %}">
+                        </a>
+                        {% else %}
+                        <img width="30px" height="30px" src="{% static 'images/black.jpeg' %}">
+                        {% endif %}
+                    {% elif col == 2 %}
+                        <img width="30px" height="30px" src="{% static 'images/miss.png' %}">
+                    {% elif col == 3 %}
+                        <img width="30px" height="30px" src="{% static 'images/hit.jpg' %}">
+                    {% endif %}
+                </td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </table><br>
+
+    {% if game.whose_turn is not user.id %}
+        Waiting for enemy's move
+    {% endif %}
+<br><br>
+{# ______________________________________________________________________________________________________   #}
+
+
+    <h2 style="color: chartreuse">Your field</h2><br>
+    <table>
+    <tr>
+    {% for i in field_size %}
+            <th>{{ i }}</th>
+    {% endfor %}
+    </tr>
+        {% for row in user_field.table %}
+            <tr>
+            <td width="15px">
+            <b>{{ forloop.counter }}</b>
+                </td>
+            {% for col in row %}
+                <td>
+                    {% if col == 1 %}
+                        <img width="30px" height="30px" src="{% static 'images/unnamed.png' %}">
+                    {% elif col == 0 %}
+                        <img width="30px" height="30px" src="{% static 'images/black.jpeg' %}">
+                    {% elif col == 2 %}
+                        <img width="30px" height="30px" src="{% static 'images/miss.png' %}">
+                    {% elif col == 3 %}
+                        <img width="30px" height="30px" src="{% static 'images/hit.jpg' %}">
+                    {% endif %}
+                </td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <p></p><p></p>
+    </div>
+    {% endif %}
+{% endblock %}
+
+</body>
+</html>

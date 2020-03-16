@@ -1,0 +1,64 @@
+{% load static %}
+<html>
+<head>
+<title>{% block title %}{% endblock %}</title>
+<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet">
+<link href="{% static 'css/default.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'css/fonts.css' %}" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+                          integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+                          crossorigin="anonymous"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+</head>
+<body>
+<div id="header-wrapper">
+	<div id="header" class="container">
+		<div id="menu">
+			<ul>
+				<li><a href="/" accesskey="1" title="">Homepage</a></li>
+                {% if user.is_authenticated %}
+				<li><a href="/user/logout">Logout</a></li>
+                {% else %}
+                <li><a href="/user/register" accesskey="1" title="">Register</a></li>
+                <li><a href="/user/login" accesskey="2" title="">Login</a></li>
+                {% endif %}
+				<li><a href="/user/dashboard" accesskey="3" title="">Dashboard</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="header-featured">
+		<div id="banner-wrapper">
+			<div id="banner" class="container">
+		</div>
+	</div>
+</div>
+<div id="wrapper">
+	<div id="page" class="container">
+
+
+		<div id="content">
+        <br><br>
+
+    {% if request.get_full_path == '/user/dashboard' or request.get_full_path == '/user/password-change' or request.get_full_path == '/user/challenges' %}
+        <div class="dashboard-menu">
+            <u>Open menu -></u>
+            <ul class="hidden">
+                <li><a href="/user/dashboard">Dashboard</a></li>
+                <li><a href="/user/password-change">Change password</a></li>
+                <li><a href="/user/challenges">Challenges panel</a></li>
+            </ul>
+        </div>
+    {% endif %}
+            <br>
+
+    <p style="font-size: 40px;">
+        {% block header %}
+        {% endblock %}
+    </p>
+        {% block content %}
+        {% endblock %}
+    </div>
+	</div>
+</div>
+</body>
+</html>

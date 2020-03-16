@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Register{% endblock %}</title>
+</head>
+<body>
+{% block header %}
+Register
+{% endblock %}
+{% block content %}
+{% if form.errors %}
+    <span style="color:red">{{ form.errors }}</span>
+{% endif %}
+<form method="post" action="">
+{% csrf_token %}
+    <p>Username:<br>
+        {{ form.username }}</p>
+    <p>Password:<br>
+    {{ form.password1 }}</p>
+    <p>Repeat password:<br>
+    {{ form.password2 }}</p>
+    <p>E-mail:<br>
+    {{ form.email }}</p>
+<input type="submit" value="Register!" class="button">
+</form>
+{% endblock %}
+</body>
+</html>
