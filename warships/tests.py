@@ -28,4 +28,6 @@ def test_creating_field(player_a, player_b):
     game = Game.objects.create(player_a=player_a, player_b=player_b)
     Field.objects.create(game=game, owner_of_field=player_a)
     assert len(Field.objects.all()) == 1
-    assert Field.objects.get(game=game)
+    assert Field.objects.get(pk=1)
+
+

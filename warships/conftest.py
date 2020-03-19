@@ -1,5 +1,6 @@
 import pytest
 from django.contrib.auth.models import User
+from django.test import Client
 
 from warships.models import Game, Field
 
@@ -14,3 +15,9 @@ def player_a():
 def player_b():
     player_b = User.objects.create(username='testing_b', password="testing", email='testb@test.com')
     return player_b
+
+
+@pytest.fixture
+def c():
+    client = Client()
+    return client
