@@ -31,3 +31,11 @@ def test_creating_field(player_a, player_b):
     assert Field.objects.get(pk=1)
 
 
+@pytest.mark.django_db
+def test_registration(c):
+    response = c.post('/user/register/', {'username': 'testing', 'password1': '#difficult#1', 'password2': '#difficult#1',
+                                          'email': 'test@test.com'})
+    print(response.content)
+    assert response.status_code == 302
+    assert c.login(username='testing', password='#difficult#1')
+    assert User.objects.get(username='testing')
