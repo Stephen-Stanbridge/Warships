@@ -10,13 +10,6 @@ def test_creating_players(player_a):
 
 
 @pytest.mark.django_db
-def test_deleting_players(player_a):
-    assert len(User.objects.all()) == 1
-    player_a.delete()
-    assert len(User.objects.all()) == 0
-
-
-@pytest.mark.django_db
 def test_creating_game(player_a, player_b):
     Game.objects.create(player_a=player_a, player_b=player_b)
     assert len(Game.objects.all()) == 1
@@ -33,9 +26,25 @@ def test_creating_field(player_a, player_b):
 
 @pytest.mark.django_db
 def test_registration(c):
-    response = c.post('/user/register/', {'username': 'testing', 'password1': '#difficult#1', 'password2': '#difficult#1',
+    response = c.post('/user/register', {'username': 'testing', 'password1': '#difficult#1', 'password2': '#difficult#1',
                                           'email': 'test@test.com'})
-    print(response.content)
     assert response.status_code == 302
-    assert c.login(username='testing', password='#difficult#1')
     assert User.objects.get(username='testing')
+
+
+@pytest.mark.django_db
+def test_login(c, player_a):
+    response = c.post('/user/login', {'username': 'testing_a', 'password': 'testing'})
+    assert response.status_code == 302
+    assert response.url == '/user/dashboard'
+
+
+@pytest.mark.django_db
+def test_changing_password(c, player_a):
+    c.login(username='testing_a', password='testing')
+    response = c.post('/user/password-change', {'old_password': 'testing', 'new_password1': '#difficult#2',
+                                                'new_password2': '#difficult#2'})
+    assert response.status_code == 302
+    assert response.url == '/user/dashboard'
+    c.logout()
+    assert c.login(username='testing_a', password='#difficult#2')

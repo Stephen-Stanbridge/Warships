@@ -7,7 +7,9 @@ from warships.models import Game, Field
 
 @pytest.fixture
 def player_a():
-    player_a = User.objects.create(username='testing_a', password="testing", email='testa@test.com')
+    player_a = User.objects.create(username='testing_a', password="testinag", email='testa@test.com')
+    player_a.set_password('testing')
+    player_a.save()
     return player_a
 
 
