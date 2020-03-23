@@ -65,9 +65,21 @@ def test_challenging_another_user(c, player_a, player_b):
 
 @pytest.mark.django_db
 def test_rejecting_invitation(c, player_a, player_b):
-    game = Game.objects.create(player_a=player_a, player_b=player_b, is_accepted=False)
+    Game.objects.create(player_a=player_a, player_b=player_b, is_accepted=False)
     assert len(Game.objects.all()) == 1
     c.force_login(player_b)
     c.get('/game/{}/{}/reject'.format(player_b.id, player_a.id))
     assert len(Game.objects.all()) == 0
 
+
+@pytest.mark.django_db
+def test_accepting_invitation(c, player_a, player_b):
+    Game.objects.create(player_a=player_a, player_b=player_b)
+    assert len(Game.objects.all()) == 1
+    c.force_login(player_b)
+    response = c.get('/game/{}/{}/accept'.format(player_b.id, player_a.id))
+    game = Game.objects.all()[0]
+    assert response.status_code == 302
+    assert game.is_accepted == True
+    assert game.whose_turn == player_b.id
+    assert len(game.field_set.all()) == 2
