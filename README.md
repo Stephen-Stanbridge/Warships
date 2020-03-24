@@ -43,7 +43,8 @@ Then, challenged user has two options. Either to accept or reject challenge.
 <img src="https://imgur.com/zsYDCeT.png" />
 
 ```
-When accepted two fields with randomized ships' positions are created. 
+When accepted two fields with randomized ships' positions are created.
+Field size as well as ships' amount and length can be very easily adjusted in AcceptInvitationView in views.py.
 You can shoot by clicking on fields. When all ships are shot game is over and deleted from database.
 ```
 
