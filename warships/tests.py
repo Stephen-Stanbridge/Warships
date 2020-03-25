@@ -87,27 +87,47 @@ def test_accepting_invitation(c, player_a, player_b):
 
 
 @pytest.mark.django_db
-def test_shooting(c, player_a, player_b):
-    table_a = create_table(8)
-    table_b = create_table(8)
-    table_a[2][2] = 1
-    table_a[2][3] = 1
-    table_b[2][1] = 1
-    game = Game.objects.create(player_a=player_a, player_b=player_b, is_accepted=True, whose_turn=player_a.id)
-    f1 = Field.objects.create(game=game, owner_of_field=player_a, table=table_a)
-    f2 = Field.objects.create(game=game, owner_of_field=player_b, table=table_b)
-    game.field_set.set([f1, f2])
-    assert len(Game.objects.all()) == 1
+def test_shooting_and_missing(c, create_accepted_game):
+    player_a = User.objects.all()[0]
+    player_b = User.objects.all()[1]
+    game = Game.objects.all()[0]
     c.force_login(player_a)
     c.get('/game/' + str(game.id) + '/shoot/' + str(player_a.id) + '/' + str(player_b.id) + '/3/1')
     get_player_b_table = Field.objects.get(owner_of_field=player_b).table
     assert get_player_b_table[3][1] == 2
-    c.logout()
+
+
+@pytest.mark.django_db
+def test_shooting_and_hitting(c, create_accepted_game):
+    player_a = User.objects.all()[0]
+    player_b = User.objects.all()[1]
+    game = Game.objects.all()[0]
+    c.force_login(player_a)
+    c.get('/game/' + str(game.id) + '/shoot/' + str(player_a.id) + '/' + str(player_b.id) + '/2/2')
+    get_player_b_table = Field.objects.get(owner_of_field=player_b).table
+    assert get_player_b_table[2][2] == 3
+
+
+@pytest.mark.django_db
+def test_shooting_and_hitting_last_ship(c, create_accepted_game):
+    player_a = User.objects.all()[0]
+    player_b = User.objects.all()[1]
+    game = Game.objects.all()[0]
+    game.whose_turn = player_b.id
+    game.save()
     c.force_login(player_b)
     c.get('/game/' + str(game.id) + '/shoot/' + str(player_b.id) + '/' + str(player_a.id) + '/2/2')
-    get_player_a_table = Field.objects.get(owner_of_field=player_a).table
-    assert get_player_a_table[2][2] == 3
-    c.logout()
+    assert len(Game.objects.all()) == 0
+
+
+@pytest.mark.django_db
+def test_shooting_field_where_it_was_already_shot(c, create_accepted_game):
+    player_a = User.objects.all()[0]
+    player_b = User.objects.all()[1]
+    game = Game.objects.all()[0]
     c.force_login(player_a)
     c.get('/game/' + str(game.id) + '/shoot/' + str(player_a.id) + '/' + str(player_b.id) + '/2/1')
-    assert len(Game.objects.all()) == 0
+    game.whose_turn = player_a.id
+    game.save()
+    response = c.get('/game/' + str(game.id) + '/shoot/' + str(player_a.id) + '/' + str(player_b.id) + '/2/1')
+    assert b'You have already shot there' in response.content
